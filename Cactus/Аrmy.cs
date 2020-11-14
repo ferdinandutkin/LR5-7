@@ -24,6 +24,7 @@ namespace Cactus
             {
                 Container.Add(value);
             }
+            else throw new WrongUnitTypeException();
         }
 
 
@@ -43,6 +44,7 @@ namespace Cactus
                 {
                     Container[index] = value;
                 }
+                else throw new WrongUnitTypeException();
             }
         }
         public IEnumerator<IThinkable> GetEnumerator() => ((IEnumerable<IThinkable>)Container).GetEnumerator();
@@ -75,7 +77,11 @@ namespace Cactus
             {
                 return Person.Parse(s);
             }
-            else return Transformer.Parse(s);
+            else if (s.IndexOf("Название") != -1)
+            {
+                return Transformer.Parse(s);
+            }
+            else throw new UnitParsingException();
         }
         
 

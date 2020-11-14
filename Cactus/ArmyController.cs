@@ -13,7 +13,7 @@ namespace Cactus
     {
         public static IEnumerable<string> SpecifiedPowerTransformerNames(Army army, int powerLevel) =>
             from unit in army
-            where unit is Transformer && (unit as Transformer).PowerLevel == powerLevel
+            where unit is Transformer t && t.PowerLevel == powerLevel
             select (unit as Transformer).Name;
 
 

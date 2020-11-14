@@ -1,5 +1,6 @@
 ﻿using Cactus;
 using System;
+using System.Diagnostics;
 using System.Linq;
 
 
@@ -12,23 +13,7 @@ namespace LR5
 {
     class Program
     {
-        static Army GenerateArmy()
-        {
-            var army = new Army();
-
-            for (int i = 0; i < 45; i++)
-            {
-                army.Add((i % 2 == 0) ?
-                    new Person("Солдат " + (i / 2 + 1), RandomDay.Get(new DateTime(1998, 10, 5), new DateTime(2005, 4, 3))) as IThinkable
-                    :
-                    new Transformer(new Random().Next(10), RandomDay.Get(new DateTime(2005, 10, 5), DateTime.Today)) { Name = "Трансформер " + (i + 1) / 2 }
-                    );
-
-            }
-
-            return army;
-        }
-
+     
         public static void LR5()
         {
             var a = new Automobile("3334");
@@ -37,8 +22,9 @@ namespace LR5
             t.Start();
             a.Beep();
 
+            a.Wroom();
             Vehicle[] arr = { a, t };
-
+ 
             var arr1 = new[] { arr[0] as IControllable, arr[1] };
 
             Printer.IAmPrinting(arr1);
@@ -55,7 +41,7 @@ namespace LR5
             {
 
                 Array.ForEach(
-                    new[] { ip, arr[1] as IThinkable },
+                    new[] { ip, arr[1] as IThinkable }, 
                     Console.WriteLine);
             }
 
@@ -63,23 +49,40 @@ namespace LR5
             (p as IExistable).Exist();
 
         }
-        static void Main()
+
+
+        public static void LR6()
         {
-            Date date;
-            date = new Date() {Day = 3 };
-            Date.Time time = Date.Time.Evening;
+
+            Army GenerateArmy()
+            {
+                var army = new Army();
+
+                for (int i = 0; i < 45; i++)
+                {
+                    army.Add((i % 2 == 0) ?
+                        new Person("Солдат " + (i / 2 + 1), RandomDay.Get(new DateTime(1998, 10, 5), new DateTime(2005, 4, 3))) as IThinkable
+                        :
+                        new Transformer(new Random().Next(10), RandomDay.Get(new DateTime(2005, 10, 5), DateTime.Today)) { Name = "Трансформер " + (i + 1) / 2 }
+                        );
+
+                }
+
+                return army;
+            }
+
 
             Army army = GenerateArmy();
 
             Console.WriteLine(army);
 
-
+             
             string fileName = @"C:\Users\ferdinand\Desktop\godbl\to.txt";
 
-           
-           
+
+
             ArmyController.ToFile(army, fileName);
-           
+
 
             Console.WriteLine();
 
@@ -94,12 +97,12 @@ namespace LR5
 
             Console.WriteLine(army1);
 
-            
+
 
             Console.WriteLine("Трансформеры с уровнем мощи 3: ");
             ArmyController.SpecifiedPowerTransformerNames(army1, 3).ToList().ForEach(Console.WriteLine);
 
-           
+
 
             Console.WriteLine("Количество боевых единиц: ");
             Console.WriteLine(ArmyController.UnitCount(army1));
@@ -109,8 +112,48 @@ namespace LR5
             var army2 = ArmyController.FromJson(s);
 
             Console.WriteLine(army2);
+        }
+
+        static void Main()
+        {
+
+            var logger = new Logger();
+            //Debug.Assert(false, "А мог бы true поставить");
+            var exceptionalDelegates = new Action[]
+            {
+                () => _ = int.Parse("9999999999999999999999999999999"),
+                () => Person.Parse("Блаблабла"),
+                () =>  _ = new int[1] {1}[9],
+                () => Transformer.Parse("Это точно не трансформер"),
+                () => _ = 42 / Convert.ToInt32(0),
+                () => new System.IO.StreamWriter(@"C:\ПапкиНеСуществует\ФайлаТоже.lul"),
+                () => new Army().Add(new NotAUnit()),
+            };
 
 
+            try
+            {
+                foreach (var action in exceptionalDelegates)
+                {
+                    try
+                    {
+                        action();
+                         
+                    }
+                    catch (Exception e)
+                    {
+                        logger.Log(e);
+                        //trow;
+                    }
+                }
+            }
+            finally
+            {
+
+                logger.Log("Прощай мир");
+           
+            }
+          
         }
     }
 }

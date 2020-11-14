@@ -156,6 +156,12 @@ public sealed class Transformer : Automobile, IThinkable
     {
         var tokens = s.Split(", ", StringSplitOptions.RemoveEmptyEntries);
 
+        if (tokens.Length != 3)
+        {
+            throw new TransformerParsingException();
+        }
+
+
         return new Transformer(int.Parse(tokens[2].Split(": ", StringSplitOptions.RemoveEmptyEntries)[1]),
             DateTime.Parse(tokens[1].Split(": ", StringSplitOptions.RemoveEmptyEntries)[1]))
         { Name = tokens[0].Split(": ", StringSplitOptions.RemoveEmptyEntries)[1] };
@@ -206,10 +212,15 @@ public class Person : Existing, IThinkable, IExistable//человек
     {
         var tokens = s.Split(", ", StringSplitOptions.RemoveEmptyEntries);
 
+        if (tokens.Length != 2)
+        {
+            throw new PersonParsingException();
+        }
+
         return new Person(tokens[0].Split(": ", StringSplitOptions.RemoveEmptyEntries)[1]
             , DateTime.Parse(tokens[1].Split(": ", StringSplitOptions.RemoveEmptyEntries)[1]));
 
     }
-
-
 }
+
+public class NotAUnit : IThinkable { }
